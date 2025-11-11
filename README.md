@@ -155,7 +155,7 @@ curl -X POST "{base_url}/api/screener" \
         "value": 100000000000
       },
       {
-        "id": "sector",
+        "id": "company.sector",
         "op": "in",
         "value": ["consumerdefensive","technology"]
       }
