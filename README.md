@@ -45,15 +45,24 @@ Content-Type: application/json
 | `pageSize` | integer | No | 50 | Number of items per page (1-1000) |
 | `sort` | object | No | `{"id": "_id", "dir": "desc"}` | Sorting configuration |
 | `filter` | array | No | `[]` | Array of filter conditions |
+| `project` | array | No | `[]` | Array of project conditions |
 
-### Sort Object
+### Sort Object (optional)
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | string | Yes | Field name to sort by |
 | `dir` | string | No | Sort direction: "asc" or "desc" (default: "asc") |
 
-### Filter Object
+### Filter Object (optional)
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | Yes | Field name to filter on |
+| `op` | string | Yes | Operation type (see operations below) |
+| `value` | any | Yes | Value(s) for the operation |
+
+### Project Object (optional)
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -110,7 +119,8 @@ curl -X POST "{base_url}/api/screener" \
       "id": "_id",
       "dir": "desc"
     },
-    "filter": []
+    "filter": [],
+    "project": []
   }'
 ```
 
@@ -159,6 +169,38 @@ curl -X POST "{base_url}/api/screener" \
         "op": "in",
         "value": ["consumerdefensive","technology"]
       }
+    ]
+  }'
+```
+
+### 4. Filter by Market Cap and Sector and Project by PE, EPS, FCF TTM
+
+```bash
+curl -X POST "{base_url}/api/screener" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "page": 1,
+    "pageSize": 15,
+    "sort": {
+      "id": "marketCap.daily.marketCap",
+      "dir": "desc"
+    },
+    "filter": [
+      {
+        "id": "marketCap.daily.marketCap",
+        "op": "gte",
+        "value": 100000000000
+      },
+      {
+        "id": "company.sector",
+        "op": "in",
+        "value": ["consumerdefensive","technology"]
+      }
+    ],
+    "project": [
+      "fcfTtm",
+      "eps",
+      "pe"
     ]
   }'
 ```
